@@ -66,25 +66,25 @@ class AnkiConverter:
         save_button.pack(pady=(0, 10))
 
         # Exemplo na área de entrada
-        example_text = """1- Red Dead Redemption
+        example_text = """23- "I-I reckon we're the only ones crazy enough"
+
+"E-eu acho que somos os únicos loucos o bastante..."
+
+24- Reckon
+
+**"I think" (eu acho)**, **"I suppose" (eu suponho)** ou **"I believe" (eu acredito)**.
+
+25- "three nasty looking degenerates."
+
+"Três degenerados de aspecto repugnante."
+
+26- Red Dead Redemption
 
 Redenção Sangrenta, Redenção Morta Vermelha
 
-2- Gunslinger
+27- Gunslinger
 
-Pistoleiro
-
-3- Horse Bonding
-
-Vínculo com o Cavalo
-
-4- he's got himself caught into a scrape again
-
-"Ele se meteu em uma enrascada de novo."
-
-5- Continuing to bond with your horse increases its trust in you
-
-"Continuar a fortalecer o vínculo com seu cavalo aumenta a confiança dele em você"""
+Pistoleiro"""
 
         self.input_text.insert(tk.END, example_text)
 
@@ -96,7 +96,6 @@ Vínculo com o Cavalo
             return
 
         # Dividir o conteúdo por números seguidos de hífen
-        # Usa regex para encontrar padrões como "1-", "32-", etc.
         entries = re.split(r'(?=\d+\s*-)', input_content)
         anki_cards = []
 
@@ -112,14 +111,21 @@ Vínculo com o Cavalo
                 # Primeira linha: pergunta (remover numeração)
                 question = re.sub(r'^\d+\s*-\s*', '', lines[0]).strip()
 
-                # Segunda linha: resposta
-                answer = lines[1].strip()
+                # Remover aspas da pergunta se existirem
+                question = question.strip('"')
+
+                # Juntar todas as outras linhas como resposta
+                answer_lines = lines[1:]
+                answer = ' '.join(answer_lines)
 
                 # Remover aspas se existirem
                 answer = answer.strip('"')
 
-                # Remover formatação markdown
+                # Remover formatação markdown mais agressivamente
                 answer = re.sub(r'\*\*(.*?)\*\*', r'\1', answer)
+
+                # Limpar formatações extras como parênteses explicativos
+                # Manter o conteúdo mas remover formatação excessiva
 
                 # Verificar se temos pergunta e resposta válidas
                 if question and answer:
